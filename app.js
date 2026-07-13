@@ -85,26 +85,35 @@
 
   async function traverseEntry(entry) {
     if (!entry) return [];
-    if (entry.isFile) {
-      return new Promise((resolve, reject) => entry.file(f => resolve([f]), reject));
-    }
-    if (entry.isDirectory) {
-      const children = await readDirectoryEntries(entry);
-      const nested = await Promise.all(children.map(traverseEntry));
-      return nested.flat();
+    try {
+      if (entry.isFile) {
+        return await new Promise((resolve, reject) => entry.file(f => resolve([f]), reject));
+      }
+      if (entry.isDirectory) {
+        const children = await readDirectoryEntries(entry);
+        const nested = await Promise.all(children.map(traverseEntry));
+        return nested.flat();
+      }
+    } catch (e) {
+      console.warn('Erreur de lecture d\'un élément déposé', e);
     }
     return [];
   }
 
   // Extracts files from a drop event, walking any dropped folders recursively.
+  // Falls back to the flat file list whenever the filesystem-entry API is
+  // unavailable or fails to yield anything, so a drop is never silently lost.
   async function getFilesFromDataTransfer(dataTransfer) {
     const items = dataTransfer.items;
     if (items && items.length && typeof items[0].webkitGetAsEntry === 'function') {
       const entries = Array.from(items)
         .map(item => item.webkitGetAsEntry())
         .filter(Boolean);
-      const results = await Promise.all(entries.map(traverseEntry));
-      return results.flat();
+      if (entries.length) {
+        const results = await Promise.all(entries.map(traverseEntry));
+        const files = results.flat();
+        if (files.length) return files;
+      }
     }
     return Array.from(dataTransfer.files);
   }
@@ -242,10 +251,27 @@
   fileInput.addEventListener('change', () => addFiles(fileInput.files));
   folderInput.addEventListener('change', () => addFiles(folderInput.files));
 
-  // Allow dropping more images (or folders) directly onto the viewer too
+  // Allow dropping more images (or folders) directly onto the viewer too,
+  // with the same visual feedback as the initial dropzone. A counter tracks
+  // nested dragenter/dragleave pairs (which fire per child element) so the
+  // highlight doesn't flicker while the pointer moves over the viewer's
+  // internal elements (preview, filmstrip thumbnails, etc.).
+  let viewerDragDepth = 0;
+  viewer.addEventListener('dragenter', e => {
+    e.preventDefault();
+    viewerDragDepth++;
+    viewer.classList.add('dragover');
+  });
   viewer.addEventListener('dragover', e => e.preventDefault());
+  viewer.addEventListener('dragleave', e => {
+    e.preventDefault();
+    viewerDragDepth = Math.max(0, viewerDragDepth - 1);
+    if (viewerDragDepth === 0) viewer.classList.remove('dragover');
+  });
   viewer.addEventListener('drop', async e => {
     e.preventDefault();
+    viewerDragDepth = 0;
+    viewer.classList.remove('dragover');
     const files = await getFilesFromDataTransfer(e.dataTransfer);
     addFiles(files);
   });

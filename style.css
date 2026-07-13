@@ -52,6 +52,14 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
+  outline: 3px dashed transparent;
+  outline-offset: -3px;
+  transition: outline-color 0.15s, background 0.15s;
+}
+
+#viewer.dragover {
+  outline-color: #6ea8fe;
+  background: #23262f;
 }
 
 #toolbar {
