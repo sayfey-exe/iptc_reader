@@ -12,13 +12,14 @@ body {
 #dropzone {
   height: 100vh;
   display: flex;
+  flex-direction: column;
+  gap: 20px;
   align-items: center;
   justify-content: center;
   text-align: center;
   border: 3px dashed #555;
   margin: 20px;
   border-radius: 12px;
-  cursor: pointer;
   font-size: 1.2em;
   color: #aaa;
   transition: background 0.15s, border-color 0.15s;
@@ -29,6 +30,23 @@ body {
   border-color: #6ea8fe;
   color: #fff;
 }
+
+#dropzoneButtons {
+  display: flex;
+  gap: 12px;
+}
+
+#dropzoneButtons button {
+  background: #3a3d47;
+  color: #eee;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 18px;
+  font-size: 0.85em;
+  cursor: pointer;
+}
+
+#dropzoneButtons button:hover { background: #4a4d58; }
 
 #viewer {
   height: 100vh;

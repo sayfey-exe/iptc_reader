@@ -4,10 +4,11 @@ Application locale, 100% dans le navigateur, pour lire les métadonnées IPTC d'
 
 ## Fonctionnalités
 
-- Glisser-déposer une ou plusieurs images (ou cliquer pour les choisir).
+- Glisser-déposer une ou plusieurs images, ou un/plusieurs dossiers (y compris avec des sous-dossiers imbriqués) — les fichiers non-images sont ignorés automatiquement.
+- Boutons "Choisir des images" / "Choisir un dossier" en alternative au glisser-déposer.
 - Navigation entre les images avec les flèches ◀ ▶ (ou les touches gauche/droite du clavier).
-- Pellicule de miniatures cliquables en bas.
-- Ajout d'images supplémentaires à tout moment via "+ Ajouter".
+- Pellicule de miniatures cliquables en bas, triée par nom/chemin.
+- Ajout d'images ou de dossiers supplémentaires à tout moment via "+ Images" / "+ Dossier".
 
 ## Utilisation
 

@@ -7,13 +7,19 @@
 </head>
 <body>
   <div id="dropzone">
-    <p>Glissez-déposez une ou plusieurs images ici,<br>ou cliquez pour en choisir.</p>
+    <p>Glissez-déposez des images ou des dossiers ici,<br>ou choisissez-les ci-dessous.</p>
+    <div id="dropzoneButtons">
+      <button id="btnPickFiles" type="button">Choisir des images</button>
+      <button id="btnPickFolder" type="button">Choisir un dossier</button>
+    </div>
     <input type="file" id="fileInput" accept="image/*" multiple hidden>
+    <input type="file" id="folderInput" webkitdirectory directory multiple hidden>
   </div>
 
   <div id="viewer" hidden>
     <div id="toolbar">
-      <button id="btnAdd" title="Ajouter des images">+ Ajouter</button>
+      <button id="btnAdd" title="Ajouter des images">+ Images</button>
+      <button id="btnAddFolder" title="Ajouter un dossier">+ Dossier</button>
       <button id="btnPrev" title="Image précédente">◀</button>
       <span id="counter"></span>
       <button id="btnNext" title="Image suivante">▶</button>

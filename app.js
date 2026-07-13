@@ -1,6 +1,10 @@
 (function () {
   const dropzone = document.getElementById('dropzone');
   const fileInput = document.getElementById('fileInput');
+  const folderInput = document.getElementById('folderInput');
+  const btnPickFiles = document.getElementById('btnPickFiles');
+  const btnPickFolder = document.getElementById('btnPickFolder');
+  const btnAddFolder = document.getElementById('btnAddFolder');
   const viewer = document.getElementById('viewer');
   const previewImg = document.getElementById('previewImg');
   const filenameEl = document.getElementById('filename');
@@ -53,8 +57,62 @@
     return String(val);
   }
 
+  const IMAGE_EXT_RE = /\.(jpe?g|png|tiff?|heic|heif|webp|bmp|gif)$/i;
+
+  function isImageFile(file) {
+    return file.type.startsWith('image/') || IMAGE_EXT_RE.test(file.name);
+  }
+
+  // Recursively reads a dropped FileSystemDirectoryEntry, batching readEntries()
+  // calls since the browser only returns a limited chunk per call.
+  function readDirectoryEntries(dirEntry) {
+    return new Promise((resolve, reject) => {
+      const reader = dirEntry.createReader();
+      let all = [];
+      function readBatch() {
+        reader.readEntries(entries => {
+          if (!entries.length) {
+            resolve(all);
+          } else {
+            all = all.concat(entries);
+            readBatch();
+          }
+        }, reject);
+      }
+      readBatch();
+    });
+  }
+
+  async function traverseEntry(entry) {
+    if (!entry) return [];
+    if (entry.isFile) {
+      return new Promise((resolve, reject) => entry.file(f => resolve([f]), reject));
+    }
+    if (entry.isDirectory) {
+      const children = await readDirectoryEntries(entry);
+      const nested = await Promise.all(children.map(traverseEntry));
+      return nested.flat();
+    }
+    return [];
+  }
+
+  // Extracts files from a drop event, walking any dropped folders recursively.
+  async function getFilesFromDataTransfer(dataTransfer) {
+    const items = dataTransfer.items;
+    if (items && items.length && typeof items[0].webkitGetAsEntry === 'function') {
+      const entries = Array.from(items)
+        .map(item => item.webkitGetAsEntry())
+        .filter(Boolean);
+      const results = await Promise.all(entries.map(traverseEntry));
+      return results.flat();
+    }
+    return Array.from(dataTransfer.files);
+  }
+
   async function addFiles(fileList) {
-    const files = Array.from(fileList).filter(f => f.type.startsWith('image/'));
+    const files = Array.from(fileList)
+      .filter(isImageFile)
+      .sort((a, b) => (a.webkitRelativePath || a.name).localeCompare(b.webkitRelativePath || b.name));
     if (!files.length) return;
 
     for (const file of files) {
@@ -159,6 +217,7 @@
     viewer.hidden = true;
     dropzone.hidden = false;
     fileInput.value = '';
+    folderInput.value = '';
   }
 
   // Drag & drop
@@ -174,18 +233,25 @@
       dropzone.classList.remove('dragover');
     })
   );
-  dropzone.addEventListener('drop', e => addFiles(e.dataTransfer.files));
-  dropzone.addEventListener('click', () => fileInput.click());
+  dropzone.addEventListener('drop', async e => {
+    const files = await getFilesFromDataTransfer(e.dataTransfer);
+    addFiles(files);
+  });
+  btnPickFiles.addEventListener('click', () => fileInput.click());
+  btnPickFolder.addEventListener('click', () => folderInput.click());
   fileInput.addEventListener('change', () => addFiles(fileInput.files));
+  folderInput.addEventListener('change', () => addFiles(folderInput.files));
 
-  // Allow dropping more images directly onto the viewer too
+  // Allow dropping more images (or folders) directly onto the viewer too
   viewer.addEventListener('dragover', e => e.preventDefault());
-  viewer.addEventListener('drop', e => {
+  viewer.addEventListener('drop', async e => {
     e.preventDefault();
-    addFiles(e.dataTransfer.files);
+    const files = await getFilesFromDataTransfer(e.dataTransfer);
+    addFiles(files);
   });
 
   btnAdd.addEventListener('click', () => fileInput.click());
+  btnAddFolder.addEventListener('click', () => folderInput.click());
   btnPrev.addEventListener('click', () => showItem(current - 1));
   btnNext.addEventListener('click', () => showItem(current + 1));
   btnClose.addEventListener('click', closeAll);
