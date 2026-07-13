@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Lecteur IPTC</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="dropzone">
+    <p>Glissez-déposez une ou plusieurs images ici,<br>ou cliquez pour en choisir.</p>
+    <input type="file" id="fileInput" accept="image/*" multiple hidden>
+  </div>
+
+  <div id="viewer" hidden>
+    <div id="toolbar">
+      <button id="btnAdd" title="Ajouter des images">+ Ajouter</button>
+      <button id="btnPrev" title="Image précédente">◀</button>
+      <span id="counter"></span>
+      <button id="btnNext" title="Image suivante">▶</button>
+      <button id="btnClose" title="Tout fermer">✕</button>
+    </div>
+
+    <div id="main">
+      <div id="preview">
+        <img id="previewImg" alt="Aperçu">
+        <div id="filename"></div>
+      </div>
+
+      <div id="metaPanel">
+        <h2>IPTC</h2>
+        <table id="iptcTable"><tbody></tbody></table>
+        <p id="noIptc" hidden>Aucune donnée IPTC trouvée dans cette image.</p>
+      </div>
+    </div>
+
+    <div id="filmstrip"></div>
+  </div>
+
+  <script src="vendor/exifr.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

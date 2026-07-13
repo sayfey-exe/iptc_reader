@@ -1,0 +1,9 @@
+{
+  "name": "iptc-reader",
+  "version": "1.0.0",
+  "description": "Application locale pour lire les métadonnées IPTC d'images (glisser-déposer, navigation entre plusieurs photos).",
+  "license": "ISC",
+  "scripts": {
+    "start": "python3 -m http.server 8080"
+  }
+}
