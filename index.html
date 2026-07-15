@@ -20,6 +20,7 @@
     <div id="toolbar">
       <button id="btnAdd" title="Ajouter des images">+ Images</button>
       <button id="btnAddFolder" title="Ajouter un dossier">+ Dossier</button>
+      <button id="btnCompare" title="Comparer les IPTC de deux photos">⇄ Comparer</button>
       <button id="btnPrev" title="Image précédente">◀</button>
       <span id="counter"></span>
       <button id="btnNext" title="Image suivante">▶</button>
@@ -40,6 +41,43 @@
     </div>
 
     <div id="filmstrip"></div>
+  </div>
+
+  <div id="compareView" hidden>
+    <div id="compareToolbar">
+      <strong>Comparaison IPTC</strong>
+      <label class="compareOnlyDiff">
+        <input type="checkbox" id="onlyDiff"> Afficher seulement les différences
+      </label>
+      <span id="compareLegend">
+        <span class="legend legend-diff">Différent</span>
+        <span class="legend legend-only">Présent d'un seul côté</span>
+        <span class="legend legend-same">Identique</span>
+      </span>
+      <button id="btnCloseCompare" title="Revenir à la visionneuse">✕ Fermer</button>
+    </div>
+
+    <div id="compareSelectors">
+      <div class="compareSide">
+        <img id="thumbA" class="compareThumb" alt="Photo A">
+        <select id="selectA" aria-label="Photo A"></select>
+      </div>
+      <div class="compareVs">vs</div>
+      <div class="compareSide">
+        <img id="thumbB" class="compareThumb" alt="Photo B">
+        <select id="selectB" aria-label="Photo B"></select>
+      </div>
+    </div>
+
+    <div id="compareTableWrap">
+      <table id="compareTable">
+        <thead>
+          <tr><th>Champ</th><th id="headA">Photo A</th><th id="headB">Photo B</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <p id="compareEmpty" hidden></p>
+    </div>
   </div>
 
   <script src="vendor/exifr.js"></script>

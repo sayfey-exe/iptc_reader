@@ -1,5 +1,9 @@
 * { box-sizing: border-box; }
 
+/* The `hidden` attribute must win over the ID-based `display` rules below,
+   which otherwise beat the UA `[hidden]` rule on specificity. */
+[hidden] { display: none !important; }
+
 body {
   margin: 0;
   font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
@@ -188,3 +192,153 @@ body {
 }
 
 #filmstrip img:hover { opacity: 0.9; }
+
+/* ---------- Comparison view ---------- */
+
+#compareView {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #1b1c22;
+}
+
+#compareToolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  background: #262830;
+  border-bottom: 1px solid #333;
+  flex-wrap: wrap;
+}
+
+#compareToolbar strong { color: #6ea8fe; font-size: 1.05em; }
+
+.compareOnlyDiff {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #ccc;
+  cursor: pointer;
+  user-select: none;
+}
+
+#compareLegend {
+  display: flex;
+  gap: 14px;
+  margin-left: auto;
+  font-size: 0.82em;
+  color: #bbb;
+}
+
+.legend { display: flex; align-items: center; gap: 5px; }
+.legend::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  display: inline-block;
+}
+.legend-diff::before { background: #b5852e; }
+.legend-only::before { background: #7a5ca8; }
+.legend-same::before { background: #3a3d47; }
+
+#btnCloseCompare {
+  background: #5a2c2c;
+  color: #eee;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 1em;
+}
+#btnCloseCompare:hover { background: #712f2f; }
+
+#compareSelectors {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 16px;
+  background: #202229;
+  border-bottom: 1px solid #333;
+}
+
+.compareSide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  max-width: 40%;
+}
+
+.compareThumb {
+  height: 90px;
+  max-width: 160px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #111318;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.compareSide select {
+  max-width: 260px;
+  background: #33363f;
+  color: #eee;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 0.9em;
+}
+
+.compareVs { color: #888; font-weight: 600; font-size: 1.2em; }
+
+#compareTableWrap {
+  flex: 1;
+  overflow: auto;
+  padding: 0 16px 16px;
+}
+
+#compareTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92em;
+}
+
+#compareTable thead th {
+  position: sticky;
+  top: 0;
+  background: #262830;
+  color: #9fb8e8;
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 2px solid #3a3d47;
+  z-index: 1;
+}
+
+#compareTable td {
+  padding: 8px 12px;
+  vertical-align: top;
+  border-bottom: 1px solid #2a2d36;
+  word-break: break-word;
+}
+
+#compareTable td.field {
+  color: #9fb8e8;
+  font-weight: 600;
+  white-space: nowrap;
+  width: 22%;
+}
+
+#compareTable tr.diff td { background: rgba(181, 133, 46, 0.16); }
+#compareTable tr.diff td.field { border-left: 3px solid #b5852e; }
+
+#compareTable tr.only td { background: rgba(122, 92, 168, 0.16); }
+#compareTable tr.only td.field { border-left: 3px solid #7a5ca8; }
+
+#compareTable tr.same td.field { border-left: 3px solid #3a3d47; }
+#compareTable tr.same td { color: #aaa; }
+
+#compareTable td.absent { color: #666; font-style: italic; }
+
+#compareEmpty { color: #888; font-style: italic; padding: 20px 12px; }

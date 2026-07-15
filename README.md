@@ -9,6 +9,8 @@ Application locale, 100% dans le navigateur, pour lire les métadonnées IPTC d'
 - Navigation entre les images avec les flèches ◀ ▶ (ou les touches gauche/droite du clavier).
 - Pellicule de miniatures cliquables en bas, triée par nom/chemin.
 - Ajout d'images ou de dossiers supplémentaires à tout moment via "+ Images" / "+ Dossier".
+- Lecture correcte des caractères UTF-8 (©, accents, tirets longs…), y compris pour les fichiers dont le marqueur de jeu de caractères IPTC est absent.
+- **Comparaison de deux photos** via le bouton "⇄ Comparer" : tableau côte à côte des champs IPTC, avec surlignage distinct des champs différents (ambre), présents d'un seul côté (violet) ou identiques, et une case "Afficher seulement les différences". Les deux photos comparées se choisissent librement dans des menus déroulants.
 
 ## Utilisation
 
